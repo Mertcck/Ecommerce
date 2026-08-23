@@ -6,30 +6,50 @@
     int productId = Model.Item2;
     var features = await storeService.GetProductFeaturesAsync(storeId, productId);
 }
-
+<form asp-action="createFeature" asp-controller="store" asp-route-id="@productId" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-class"></div>
+    <div class="input-group">
+        <span class="input-group-text">Özellik Adı ve Değeri</span>
+        <input type="text" class="form-control" placeholder="Ad" name="Name" />
+        <input type="text" class="form-control" placeholder="Değer" name="Value" />
+        <button class="btn btn-outline-secondary" type="submit">Ekle</button>
+    </div>
+</form>
+<hr />
 @if (features != null && features.Any())
 {
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Sıra No</th>
-                <th>İsim</th>
-                <th>Değer</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var feat in features)
-            {
+    <form method="post" asp-action="ChangeFeatureDisplayOrders" asp-controller="store" asp-route-id="@productId">
+        @Html.AntiForgeryToken()
+        <table class="table table-bordered table-striped">
+            <thead>
                 <tr>
-                    <td>@feat.DisplayOrder</td>
-                    <td>@feat.Name</td>
-                    <td>@feat.Value</td>
-                    <td></td>
+                    <th>Sıra No</th>
+                    <th>İsim</th>
+                    <th>Değer</th>
+                    <th>İşlemler</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var feat in features)
+                {
+                    <tr>
+                        <td>
+                            <input type="number" step="1" min="0" name="featureOrders[@feat.Id]" value="@feat.DisplayOrder" class="form-control form-control-sm" />
+                        </td>
+                        <td>@feat.Name</td>
+                        <td>@feat.Value</td>
+                        <td>
+                            <button type="submit" asp-action="deleteFeature" asp-controller="store" asp-route-productId="@productId" asp-route-imageId="@feat.Id" class="btn btn-sm btn-secondary">Sil</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+            <button type="submit" class="btn btn-sm btn-warning">Sıralamayı Kaydet</button>
+        </div>
+    </form>
 }
 else
 {

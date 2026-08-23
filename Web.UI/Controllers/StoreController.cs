@@ -1,5 +1,6 @@
 ﻿using Core.Abstracts.IServices;
 using Core.Concretes.DTOs.Product;
+using Core.Concretes.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,11 +15,13 @@ namespace Web.UI.Controllers
         private readonly IStoreProductService service;
         private readonly ICategoryService categoryService;
         private readonly IBrandService brandService;
-        public StoreController(IStoreProductService service, ICategoryService categoryService, IBrandService brandService)
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public StoreController(IStoreProductService service, ICategoryService categoryService, IBrandService brandService, IWebHostEnvironment webHostEnvironment)
         {
             this.service = service;
             this.categoryService = categoryService;
             this.brandService = brandService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         private async Task<int> getCurrentStoreId()
@@ -120,6 +123,83 @@ namespace Web.UI.Controllers
             ViewBag.Categories = new SelectList(await categoryService.GetCategoriesAsync(), "Id", "Name", model.CategoryId);
             ViewBag.Brands = new SelectList(await brandService.GetBrandsAsync(), "Id", "Name", model.BrandId);
             return View(model);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadImage(int id, IFormFile File)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+
+            if (await service.AddProductImageAsync(storeId, id, new CreateProductImageDto { File = File }, webHostEnvironment.WebRootPath))
+            {
+                return RedirectToAction(nameof(ProductDetail), new { id });
+            }
+            ModelState.AddModelError(string.Empty, "Görüntü yükleme başarısız!");
+            return RedirectToAction(nameof(ProductDetail), new { id });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateFeature(int id, string Name, string Value)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+            if (await service.AddProductFeatureAsync(storeId, id, new CreateProductFeatureDto { Name = Name, Value = Value }))
+            {
+                return RedirectToAction(nameof(ProductDetail), new { id });
+            }
+            ModelState.AddModelError(string.Empty, "Özellik ekleme başarısız!");
+            return RedirectToAction(nameof(ProductDetail), new { id });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteImage(int productId, int imageId)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+
+            await service.DeleteProductImageAsync(storeId, productId, imageId);
+
+            return RedirectToAction(nameof(ProductDetail), new { id = productId });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteFeature(int productId, int featureId)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+
+            await service.DeleteProductFeatureAsync(storeId, productId, featureId);
+
+            return RedirectToAction(nameof(ProductDetail), new { id = productId });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeImageDisplayOrders(int id, Dictionary<int, int> imageOrders)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+
+            if (imageOrders != null && imageOrders.Count > 0)
+            {
+                await service.UpdateProductImageDisplayOrderAsync(storeId, id, imageOrders);
+            }
+
+            return RedirectToAction(nameof(ProductDetail), new { id });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeFeatureDisplayOrders(int id, Dictionary<int, int> featureOrders)
+        {
+            var storeId = await getCurrentStoreId();
+            if (storeId == 0) return Forbid();
+
+            if (featureOrders != null && featureOrders.Count > 0)
+            {
+                await service.UpdateProductFeatureDisplayOrderAsync(storeId, id, featureOrders);
+            }
+
+            return RedirectToAction(nameof(ProductDetail), new { id });
         }
     }
 }

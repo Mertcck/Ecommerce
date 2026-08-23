@@ -138,7 +138,7 @@ namespace Business.Services
         {
             var productRepo = unitOfWork.Repository<Product>();
             var product = await productRepo.ReadByIdAsync(productId);
-            if (product == null || product.StoreId == storeId) return [];
+            if (product == null || product.StoreId != storeId) return [];
 
             var featureRepo = unitOfWork.Repository<ProductFeature>();
             var features = await featureRepo.ReadManyAsync(x => x.ProductId == productId);
@@ -149,7 +149,7 @@ namespace Business.Services
         {
             var productRepo = unitOfWork.Repository<Product>();
             var product = await productRepo.ReadByIdAsync(productId);
-            if (product == null || product.StoreId == storeId) return [];
+            if (product == null || product.StoreId != storeId) return [];
 
             var imageRepo = unitOfWork.Repository<ProductImage>();
             var images = await imageRepo.ReadManyAsync(x => x.ProductId == productId);

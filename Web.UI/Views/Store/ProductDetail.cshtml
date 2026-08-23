@@ -3,7 +3,7 @@
     ViewData["Title"] = "Ürün Detayı: " + Model.Name;
 }
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card text-bg-light rounded-0">
             <div class="card-header">
                 <h5>@Model.Name</h5>
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card text-bg-light rounded-0 mb-4">
             <div class="card-header">
                 <h5 class="card-title">Ürün Görselleri</h5>
@@ -28,7 +28,8 @@
                 <partial name="_ProductImages" model="(Model.StoreId, Model.Id)" />
             </div>
         </div>
-
+    </div>
+    <div class="col-md-4">
         <div class="card text-bg-light rounded-0">
             <div class="card-header">
                 <h5 class="card-title">Ürün Özellikleri</h5>

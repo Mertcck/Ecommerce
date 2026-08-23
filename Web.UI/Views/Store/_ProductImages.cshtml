@@ -7,29 +7,49 @@
     var images = await storeService.GetProductImagesAsync(storeId, productId);
 }
 
+<form asp-action="uploadImage" asp-controller="store" asp-route-id="@productId" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-class"></div>
+    <label for="File">Ürün Görseli:</label>
+    <div class="input-group">
+        <input type="file" class="form-control" id="File" name="File" />
+        <button class="btn btn-outline-secondary" type="submit">Yükle</button>
+    </div>
+</form>
+<hr />
 @if (images != null && images.Any())
 {
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Sıra No</th>
-                <th>Görsel</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var img in images)
-            {
+    <form method="post" asp-action="ChangeImageDisplayOrders" asp-controller="store" asp-route-id="@productId">
+        @Html.AntiForgeryToken()
+        <table class="table table-bordered table-striped">
+            <thead>
                 <tr>
-                    <td>@img.DisplayOrder</td>
-                    <td>
-                        <img src="@img.ImageUrl" class="img-thumbnail" style="max-width:5rem; max-height:5rem" alt="..." />
-                    </td>
-                    <td></td>
+                    <th>Sıra No</th>
+                    <th>Görsel</th>
+                    <th>İşlemler</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var img in images)
+                {
+                    <tr>
+                        <td>
+                            <input type="number" step="1" min="0" name="imageOrders[@img.Id]" value="@img.DisplayOrder" class="form-control form-control-sm" />
+                        </td>
+                        <td>
+                            <img src="@img.ImageUrl" class="img-thumbnail" style="max-width:5rem; max-height:5rem" alt="..." />
+                        </td>
+                        <td>
+                            <button type="submit" asp-action="deleteImage" asp-controller="store" asp-route-productId="@productId" asp-route-imageId="@img.Id" class="btn btn-sm btn-secondary">Sil</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+            <button type="submit" class="btn btn-sm btn-warning">Sıralamayı Kaydet</button>
+        </div>
+    </form>
 }
 else
 {
