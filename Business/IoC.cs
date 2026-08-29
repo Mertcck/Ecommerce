@@ -30,6 +30,9 @@ namespace Business
             services.AddScoped<IStoreProductService, StoreProductService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<ICategoryService, CategoryService>();
+
+            services.AddScoped<IHomeService, HomeService>();
+
             return services;
         }
     }

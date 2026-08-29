@@ -1,3 +1,4 @@
+using Core.Abstracts.IServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Web.UI.Models;
@@ -7,15 +8,16 @@ namespace Web.UI.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHomeService service;
+        public HomeController(ILogger<HomeController> logger, IHomeService service)
         {
             _logger = logger;
+            this.service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await service.GetAllAsync());
         }
 
         public IActionResult Privacy()

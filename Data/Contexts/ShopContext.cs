@@ -115,6 +115,10 @@ namespace Data.Contexts
             builder.Entity<Product>()
                 .Navigation(p => p.Features)
                 .AutoInclude();
+
+            builder.Entity<Product>()
+                .Navigation(p => p.Store)
+                .AutoInclude();
             #endregion
         }
     }
