@@ -5,6 +5,7 @@ namespace Core.Concretes.Entities
     public class Product : BaseEntity
     {
         public string Name { get; set; } = null!;
+        public string Slug { get; set; } = string.Empty;
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
@@ -17,5 +18,6 @@ namespace Core.Concretes.Entities
         public virtual Store Store { get; set; } = null!;
         public virtual ICollection<ProductImage> Images { get; set; } = [];
         public virtual ICollection<ProductFeature> Features { get; set; } = [];
+        public virtual ICollection<CartItem> CartItems { get; set; } = [];
     }
 }

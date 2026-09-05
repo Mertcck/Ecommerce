@@ -1,4 +1,5 @@
 using Core.Abstracts.IServices;
+using Core.Concretes.DTOs.Sales;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Web.UI.Models;
@@ -15,9 +16,9 @@ namespace Web.UI.Controllers
             this.service = service;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(ProductsFilterDto filter)
         {
-            return View(await service.GetAllAsync());
+            return View(await service.GetAllAsync(filter));
         }
 
         public IActionResult Privacy()

@@ -2,6 +2,7 @@
 using Core.Concretes.DTOs.Product;
 using Core.Concretes.DTOs.Sales;
 using Core.Concretes.Entities;
+using Core.Utils;
 
 namespace Business
 {
@@ -12,7 +13,8 @@ namespace Business
             // CreateDto -> Entity
             CreateMap<CreateProductDto, Product>();
             CreateMap<CreateCategoryDto, Category>();
-            CreateMap<CreateBrandDto, Brand>();
+            CreateMap<CreateBrandDto, Brand>()
+                .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.Name.ToUrl()));
             CreateMap<CreateProductImageDto, ProductImage>();
             CreateMap<CreateProductFeatureDto, ProductFeature>();
 
@@ -38,7 +40,8 @@ namespace Business
             // Entity <-> UpdateDto
             CreateMap<Product, UpdateProductDto>().ReverseMap();
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
-            CreateMap<Brand, UpdateBrandDto>().ReverseMap();
+            CreateMap<Brand, UpdateBrandDto>().ReverseMap()
+                .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.Name.ToUrl()));
 
             // Entity -> DetailDto
             CreateMap<Product, StoreProductDto>()

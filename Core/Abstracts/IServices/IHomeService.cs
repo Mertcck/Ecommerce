@@ -4,6 +4,6 @@ namespace Core.Abstracts.IServices
 {
     public interface IHomeService
     {
-        Task<IEnumerable<ProductCardDto>> GetAllAsync();
+        Task<IEnumerable<ProductCardDto>> GetAllAsync(ProductsFilterDto filter);
     }
 }

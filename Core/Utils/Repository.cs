@@ -42,6 +42,8 @@ namespace Core.Utils
             }
         }
 
+        public IQueryable<T> Query() => _set.AsQueryable();
+
         public async Task<T?> ReadByIdAsync(object key) => await _set.FindAsync(key);
 
         public async Task<IEnumerable<T>> ReadManyAsync(Expression<Func<T, bool>>? where = null) => await _set.Where(where ?? (x => true)).ToListAsync();

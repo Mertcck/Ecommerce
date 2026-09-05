@@ -18,6 +18,8 @@ namespace Data.Contexts
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }
         public virtual DbSet<ProductFeature> ProductFeatures { get; set; }
+        public virtual DbSet<Cart> Carts { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -85,6 +87,27 @@ namespace Data.Contexts
                 .WithMany(p => p.Features)
                 .HasForeignKey(pf => pf.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Sepet -> Müşteri
+            builder.Entity<Cart>()
+                .HasOne(c => c.Customer)
+                .WithMany(c => c.Carts)
+                .HasForeignKey(c => c.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Sepet Ürünü -> Sepet
+            builder.Entity<CartItem>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.Items)
+                .HasForeignKey(ci => ci.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Sepet Ürünü -> Ürün
+            builder.Entity<CartItem>()
+                .HasOne(ci => ci.Product)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
 
             #region AutoInclude
@@ -118,6 +141,18 @@ namespace Data.Contexts
 
             builder.Entity<Product>()
                 .Navigation(p => p.Store)
+                .AutoInclude();
+
+            builder.Entity<CartItem>()
+                .Navigation(ci => ci.Product)
+                .AutoInclude();
+
+            builder.Entity<Cart>()
+                .Navigation(c => c.Customer)
+                .AutoInclude();
+
+            builder.Entity<Cart>()
+                .Navigation(c => c.Items)
                 .AutoInclude();
             #endregion
         }

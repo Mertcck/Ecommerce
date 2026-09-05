@@ -10,6 +10,7 @@ namespace Core.Utils
 
         Task<T?> ReadByIdAsync(object key); // key: Entity/Primary Key
         Task<IEnumerable<T>> ReadManyAsync(Expression<Func<T, bool>>? where = null);
+        IQueryable<T> Query();
 
         void UpdateOne(T entity);
         void UpdateMany(IEnumerable<T> entities);

@@ -10,5 +10,6 @@ namespace Core.Concretes.Entities
         public string LastName { get; set; } = null!;
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; } = [];
     }
 }
