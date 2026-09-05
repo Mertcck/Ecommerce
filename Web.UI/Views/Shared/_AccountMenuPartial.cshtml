@@ -1,10 +1,42 @@
-﻿@using Core.Concretes.Entities
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<AppUser> SignInManager
+﻿@inject SignInManager<AppUser> SignInManager
+@inject IShoppingService ShoppingService
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        var cart = await ShoppingService.GetCartAsync(User);
+        if (cart != null)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sepetim (@cart.ItemCount)
+                </a>
+                <ul class="dropdown-menu">
+                    @foreach (var item in cart.Items)
+                    {
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <img src="@(item.CoverImagePath ?? "https://placehold.co/400x400?text=Görsel+Yok")" class="img-fluid" alt="@item.ProductName" />
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="h4">@item.ProductName</span><br />
+                                        <span class="h6 text-muted">@item.Quantity x @item.Price.ToString("C") = @item.TotalPrice.ToString("C")</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            Toplam: @cart.CartTotal.ToString("C")
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
         <li class="nav-item">
             <a asp-action="index" asp-controller="account" class="nav-link text-dark">Merhaba, @User.Identity!.Name</a>
         </li>

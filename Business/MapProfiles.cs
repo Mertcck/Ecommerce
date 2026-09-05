@@ -47,6 +47,12 @@ namespace Business
             CreateMap<Product, StoreProductDto>()
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+
+            CreateMap<Cart, CartDto>();
+            CreateMap<CartItem, CartItemDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Price))
+                .ForMember(dest => dest.CoverImagePath, opt => opt.MapFrom(src => src.Product.Images.Any() ? src.Product.Images.OrderBy(x => x.DisplayOrder).FirstOrDefault()!.ImageUrl : null));
         }
     }
 }

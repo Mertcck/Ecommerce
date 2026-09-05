@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<ProductCardDto>
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -26,7 +28,16 @@
                         <small class="badge bg-danger bg-gradient bg-opacity-50">Stokta Yok!</small>
                     }
                 </div>
-                <button class="btn btn-sm btn-primary w-100">Sepete Ekle</button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var user = await UserManager.GetUserAsync(User);
+                    if (user != null && user.UserType == UserType.Customer)
+                    {
+                        <form method="post" asp-action="addToCart" asp-controller="home" asp-route-productId="@item.Id">
+                            <button type="submit" class="btn btn-sm btn-primary w-100">Sepete Ekle</button>
+                        </form>
+                    }
+                }
             </div>
         </div>
     }
