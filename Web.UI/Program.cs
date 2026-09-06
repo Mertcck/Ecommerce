@@ -1,4 +1,9 @@
 using Business;
+using Business.Services;
+using Core.Abstracts.IServices;
+using Core.Concretes.Entities;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +28,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapPost("/api/cart/add/{id}/{qty?}", async (IShoppingService service, ClaimsPrincipal User, int id, int qty = 1) =>
+{
+    bool result = await service.AddToCartAsync(User, id, qty);
+    return new { Result = result, Message = result ? "Ürün sepete eklendi." : "Ürün sepete eklenemedi!" }; // Anonim sınıf olarak cevap dönüldü.
+});
 
 app.MapControllerRoute(
     name: "areas",
