@@ -33,9 +33,12 @@
                     var user = await UserManager.GetUserAsync(User);
                     if (user != null && user.UserType == UserType.Customer)
                     {
+                        @*
                         <form method="post" asp-action="addToCart" asp-controller="home" asp-route-productId="@item.Id">
                             <button type="submit" class="btn btn-sm btn-primary w-100">Sepete Ekle</button>
                         </form>
+                        *@
+                        <button type="button" class="btn btn-sm btn-primary w-100" id="btnadd_@item.Id">Sepete Ekle</button>
                     }
                 }
             </div>

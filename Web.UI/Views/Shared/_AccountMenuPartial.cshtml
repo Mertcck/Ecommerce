@@ -7,7 +7,7 @@
         var cart = await ShoppingService.GetCartAsync(User);
         if (cart != null)
         {
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" id="current-cart">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Sepetim (@cart.ItemCount)
                 </a>
